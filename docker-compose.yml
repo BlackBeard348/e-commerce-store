@@ -7,5 +7,42 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    container_name: e-commerce-store-api
+    working_dir: /app
+    command: npm run dev
+    environment:
+      PORT: 5050
+      MONGODB_URI: mongodb://mongo:27017/ecommerce_store
+      JWT_SECRET: compose-dev-jwt-secret
+      WEBHOOK_SECRET: compose-dev-webhook-secret
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+
+  web:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: e-commerce-store-web
+    working_dir: /app
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    environment:
+      VITE_API_BASE_URL: http://localhost:5050
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
 volumes:
   mongo_data:

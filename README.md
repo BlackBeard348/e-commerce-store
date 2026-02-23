@@ -1,6 +1,6 @@
 # e-commerce-store
 
-MERN starter project with a Vite React client, Express/Mongoose server, and local MongoDB via Docker.
+MERN MVP for an e-commerce app using a Vite React SPA, Express API, and MongoDB.
 
 ## Prerequisites
 
@@ -14,26 +14,81 @@ MERN starter project with a Vite React client, Express/Mongoose server, and loca
 npm install
 npm --prefix client install
 npm --prefix server install
-docker compose up -d
 ```
 
-## Run
+## Environment
+
+Server env template: `server/.env.example`
 
 ```bash
+cp server/.env.example server/.env
+```
+
+## Docker Compose (web + api + mongodb)
+
+```bash
+docker compose up --build
+```
+
+- Web: `http://localhost:5173`
+- API: `http://localhost:5050`
+- MongoDB: `localhost:27018`
+
+## Seed deterministic catalog (~1,000 products)
+
+```bash
+npm run seed
+```
+
+## Run locally without Docker
+
+```bash
+docker compose up -d mongo
+npm run seed
 npm run dev
 ```
 
-Client runs on `http://localhost:5173` and server on `http://localhost:5050`.
-MongoDB runs on host port `27018` (container `27017`).
+## Current API endpoints
 
-## Health Check
+### Auth
 
-```bash
-curl http://localhost:5050/health
-```
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `POST /api/auth/password/forgot`
+- `POST /api/auth/password/reset`
+- `GET /api/auth/me`
 
-## Lint
+### Products
+
+- `GET /api/products`
+- `GET /api/products/categories`
+- `GET /api/products/:id`
+
+### Cart
+
+- `GET /api/cart`
+- `POST /api/cart/items`
+- `PATCH /api/cart/items/:productId`
+- `DELETE /api/cart/items/:productId`
+
+### Checkout and webhooks
+
+- `POST /api/checkout` (requires auth + `Idempotency-Key`)
+- `POST /api/webhooks/payment`
+
+### Orders
+
+- `GET /api/orders`
+- `GET /api/orders/:id`
+
+## Quality checks
 
 ```bash
 npm run lint
+npm run build
 ```
+
+## Progress tracking
+
+Requirement-by-requirement status is tracked in `IMPLEMENTATION_CHECKLIST.md`.

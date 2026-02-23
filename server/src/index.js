@@ -1,18 +1,10 @@
-import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
 import mongoose from "mongoose";
+import { createApp } from "./app.js";
 
 dotenv.config();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
+const app = createApp();
 const PORT = process.env.PORT || 5050;
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27018/ecommerce_store";
 
